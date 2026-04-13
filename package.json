@@ -1,0 +1,27 @@
+{
+  "name": "learn-vibe-coding",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/index.ts",
+    "start": "bun src/index.ts",
+    "db:push": "bun x drizzle-kit push",
+    "db:generate": "bun x drizzle-kit generate",
+    "db:studio": "bun x drizzle-kit studio"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/express": "^5.0.6",
+    "drizzle-kit": "^0.31.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "postgres": "^3.4.9"
+  }
+}
