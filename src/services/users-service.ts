@@ -69,6 +69,35 @@ export class UsersService {
 
     return token;
   }
+
+  async getCurrentUser(token: string) {
+    // Find session
+    const session = await db.query.sessions.findFirst({
+      where: eq(sessions.token, token),
+    });
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    // Find user
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, session.userId),
+    });
+
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    // Return safe user info
+    return {
+      id: user.id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      createdAt: user.createdAt,
+    };
+  }
 }
 
 export const usersService = new UsersService();
