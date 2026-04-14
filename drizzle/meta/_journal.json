@@ -15,6 +15,13 @@
       "when": 1776137015217,
       "tag": "0001_tearful_thena",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776150482501,
+      "tag": "0002_supreme_xorn",
+      "breakpoints": true
     }
   ]
 }
