@@ -8,6 +8,13 @@
       "when": 1776073416148,
       "tag": "0000_high_sunspot",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776137015217,
+      "tag": "0001_tearful_thena",
+      "breakpoints": true
     }
   ]
 }

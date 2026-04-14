@@ -12,29 +12,9 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-app.get("/users", async (req, res) => {
-  try {
-    const allUsers = await db.select().from(users);
-    res.json(allUsers);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-});
+import usersRouter from "./routes/users-route";
 
-app.post("/users", async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    if (!name || !email) {
-      return res.status(400).json({ error: "Name and email are required" });
-    }
-    const newUser = await db.insert(users).values({ name, email }).returning();
-    res.status(201).json(newUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to create user" });
-  }
-});
+app.use("/api/v1/users", usersRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
