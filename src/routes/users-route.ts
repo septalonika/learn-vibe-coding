@@ -72,4 +72,37 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/current", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        message: "Unauthorized",
+        error: "Unauthorized",
+      });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const user = await usersService.getCurrentUser(token);
+
+    res.status(200).json({
+      message: "User found",
+      data: user,
+    });
+  } catch (error: any) {
+    if (error.message === "Unauthorized") {
+      return res.status(401).json({
+        message: "Unauthorized",
+        error: "Unauthorized",
+      });
+    }
+    console.error(error);
+    res.status(500).json({
+      message: "An unexpected error occurred",
+      error: "Internal Server Error",
+    });
+  }
+});
+
 export default router;
