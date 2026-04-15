@@ -7,8 +7,8 @@ export const validateRequest = (schema: AnyZodObject) => {
     try {
       req.body = await schema.parseAsync(req.body);
       next();
-    } catch (error) {
-      if (error instanceof ZodError) {
+    } catch (error: any) {
+      if (error instanceof ZodError || error.name === "ZodError") {
         return ApiResponse.error(res, 400, "Validation Error", error.errors);
       }
       next(error);

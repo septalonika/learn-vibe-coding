@@ -33,7 +33,13 @@ export class UsersService {
       return newUser;
     } catch (error: any) {
       // 23505 is PostgreSQL error code for unique_violation
-      if (error.code === "23505") {
+      // Drizzle/postgres.js might wrap the error in a DrizzleQueryError with the original error in .cause
+      const pgCode = error.code || error.cause?.code;
+      
+      if (pgCode === "23505" || 
+          error.message?.includes("23505") || 
+          error.message?.includes("unique constraint") ||
+          error.message?.includes("duplicate key")) {
         throw new Error("User already exists");
       }
       throw error;

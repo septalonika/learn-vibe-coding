@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
 import { ApiResponse } from "../utils/api-response";
 
-export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const errorMiddleware = (err: Error & { code?: string; cause?: any }, req: Request, res: Response, next: NextFunction) => {
   // If headers are already sent, delegate to the default Express error handler
   if (res.headersSent) {
     return next(err);
@@ -16,17 +17,23 @@ export const errorMiddleware = (err: any, req: Request, res: Response, next: Nex
     return ApiResponse.error(res, 401, "Unauthorized");
   }
 
-  // PostgreSQL string overflow/truncation
-  if (err.code === "22001") {
+  // PostgreSQL errors (including Drizzle-wrapped causes)
+  const pgCode = err.code || err.cause?.code;
+
+  if (pgCode === "22001") {
     return ApiResponse.error(res, 400, "Input value exceeds allowed length");
   }
+  
+  if (pgCode === "23505") {
+    return ApiResponse.error(res, 400, "User already exists");
+  }
 
-  // Zod validation errors (we'll handle this in validate-middleware too, but good to have here)
-  if (err.name === "ZodError") {
+  // Zod validation errors
+  if (err instanceof ZodError || err.name === "ZodError") {
     return ApiResponse.error(res, 400, "Validation Error", err.errors);
   }
 
   // Default catch-all
-  console.error(err);
+  // console.error(err); // Un-comment for deep debugging
   return ApiResponse.error(res, 500, "An unexpected error occurred");
 };
