@@ -70,32 +70,36 @@ export class UsersService {
     return token;
   }
 
+  async logoutUser(token: string) {
+    // Optimized: Delete and check existence in one query
+    const deletedSessions = await db
+      .delete(sessions)
+      .where(eq(sessions.token, token))
+      .returning();
+
+    if (deletedSessions.length === 0) {
+      throw new Error("Unauthorized");
+    }
+  }
+
   async getCurrentUser(token: string) {
-    // Find session
     const session = await db.query.sessions.findFirst({
       where: eq(sessions.token, token),
+      with: {
+        user: true,
+      },
     });
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new Error("Unauthorized");
     }
 
-    // Find user
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, session.userId),
-    });
-
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
-
-    // Return safe user info
     return {
-      id: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      email: user.email,
-      createdAt: user.createdAt,
+      id: session.user.id,
+      firstname: session.user.firstname,
+      lastname: session.user.lastname,
+      email: session.user.email,
+      createdAt: session.user.createdAt,
     };
   }
 }
