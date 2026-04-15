@@ -2,45 +2,45 @@ import { db } from "../db";
 import { users, sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { RegisterInput, LoginInput } from "../validators/user-validator";
 
 export class UsersService {
-  async registerUser(data: any) {
+  async registerUser(data: RegisterInput) {
     const { firstname, lastname, email, password } = data;
-
-    // Check if user already exists
-    const existingUser = await db.query.users.findFirst({
-      where: eq(users.email, email),
-    });
-
-    if (existingUser) {
-      throw new Error("User already exists");
-    }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert user
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        firstname,
-        lastname,
-        email,
-        password: hashedPassword,
-      })
-      .returning({
-        id: users.id,
-        firstname: users.firstname,
-        lastname: users.lastname,
-        email: users.email,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
-      });
+    try {
+      // Insert user directly and handle potential unique constraint violation (email)
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          firstname,
+          lastname,
+          email,
+          password: hashedPassword,
+        })
+        .returning({
+          id: users.id,
+          firstname: users.firstname,
+          lastname: users.lastname,
+          email: users.email,
+          createdAt: users.createdAt,
+          updatedAt: users.updatedAt,
+        });
 
-    return newUser;
+      return newUser;
+    } catch (error: any) {
+      // 23505 is PostgreSQL error code for unique_violation
+      if (error.code === "23505") {
+        throw new Error("User already exists");
+      }
+      throw error;
+    }
   }
 
-  async loginUser(data: any) {
+  async loginUser(data: LoginInput) {
     const { email, password } = data;
 
     // Find user
@@ -70,32 +70,36 @@ export class UsersService {
     return token;
   }
 
+  async logoutUser(token: string) {
+    // Optimized: Delete and check existence in one query
+    const deletedSessions = await db
+      .delete(sessions)
+      .where(eq(sessions.token, token))
+      .returning();
+
+    if (deletedSessions.length === 0) {
+      throw new Error("Unauthorized");
+    }
+  }
+
   async getCurrentUser(token: string) {
-    // Find session
     const session = await db.query.sessions.findFirst({
       where: eq(sessions.token, token),
+      with: {
+        user: true,
+      },
     });
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new Error("Unauthorized");
     }
 
-    // Find user
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, session.userId),
-    });
-
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
-
-    // Return safe user info
     return {
-      id: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      email: user.email,
-      createdAt: user.createdAt,
+      id: session.user.id,
+      firstname: session.user.firstname,
+      lastname: session.user.lastname,
+      email: session.user.email,
+      createdAt: session.user.createdAt,
     };
   }
 }
