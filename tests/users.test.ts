@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from "bun:test";
 import request from "supertest";
-import { app } from "../src/index";
-import { clearDatabase } from "./utils";
+import { app } from "../src/app";
+import { clearDatabase, createTestUser, getTestToken } from "./utils";
 
 describe("Users API", () => {
   beforeEach(async () => {
@@ -10,14 +10,7 @@ describe("Users API", () => {
 
   describe("POST /api/v1/users (Registration)", () => {
     it("should register a new user successfully", async () => {
-      const response = await request(app)
-        .post("/api/v1/users")
-        .send({
-          firstname: "John",
-          lastname: "Doe",
-          email: "john@example.com",
-          password: "password123",
-        });
+      const response = await createTestUser(app);
 
       expect(response.status).toBe(201);
       expect(response.body.message).toBe("User created successfully");
@@ -26,14 +19,7 @@ describe("Users API", () => {
     });
 
     it("should fail to register with an existing email", async () => {
-      await request(app)
-        .post("/api/v1/users")
-        .send({
-          firstname: "John",
-          lastname: "Doe",
-          email: "john@example.com",
-          password: "password123",
-        });
+      await createTestUser(app);
 
       const response = await request(app)
         .post("/api/v1/users")
@@ -81,14 +67,7 @@ describe("Users API", () => {
 
   describe("POST /api/v1/users/login", () => {
     beforeEach(async () => {
-      await request(app)
-        .post("/api/v1/users")
-        .send({
-          firstname: "John",
-          lastname: "Doe",
-          email: "john@example.com",
-          password: "password123",
-        });
+      await createTestUser(app);
     });
 
     it("should login successfully and return a token", async () => {
@@ -144,22 +123,8 @@ describe("Users API", () => {
     let token: string;
 
     beforeEach(async () => {
-      await request(app)
-        .post("/api/v1/users")
-        .send({
-          firstname: "John",
-          lastname: "Doe",
-          email: "john@example.com",
-          password: "password123",
-        });
-
-      const response = await request(app)
-        .post("/api/v1/users/login")
-        .send({
-          email: "john@example.com",
-          password: "password123",
-        });
-      token = response.body.data;
+      await createTestUser(app);
+      token = await getTestToken(app);
     });
 
     it("should get current user with valid token", async () => {
@@ -194,22 +159,8 @@ describe("Users API", () => {
     let token: string;
 
     beforeEach(async () => {
-      await request(app)
-        .post("/api/v1/users")
-        .send({
-          firstname: "John",
-          lastname: "Doe",
-          email: "john@example.com",
-          password: "password123",
-        });
-
-      const response = await request(app)
-        .post("/api/v1/users/login")
-        .send({
-          email: "john@example.com",
-          password: "password123",
-        });
-      token = response.body.data;
+      await createTestUser(app);
+      token = await getTestToken(app);
     });
 
     it("should logout successfully", async () => {
