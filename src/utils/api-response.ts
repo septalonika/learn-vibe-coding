@@ -11,7 +11,7 @@ export class ApiResponse {
   static error(res: Response, status: number, message: string, error: any = null) {
     return res.status(status).json({
       message,
-      error: error || (status === 400 ? "Bad Request" : status === 401 ? "Unauthorized" : "Internal Server Error"),
+      error: error !== null ? error : (status === 400 ? "Bad Request" : status === 401 ? "Unauthorized" : "Internal Server Error"),
     });
   }
 }
