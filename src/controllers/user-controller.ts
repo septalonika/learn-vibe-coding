@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { usersService } from "../services/users-service";
 import { ApiResponse } from "../utils/api-response";
-import { AuthRequest } from "../middlewares/auth-middleware";
+import { AuthRequest } from "../types/auth";
 
 export class UserController {
   async register(req: Request, res: Response, next: NextFunction) {

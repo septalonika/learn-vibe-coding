@@ -3,17 +3,7 @@ import { db } from "../db";
 import { sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { ApiResponse } from "../utils/api-response";
-
-export interface AuthRequest extends Request {
-  user?: {
-    id: number;
-    firstname: string;
-    lastname: string;
-    email: string;
-    createdAt: Date;
-  };
-  token?: string;
-}
+import { AuthRequest } from "../types/auth";
 
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {

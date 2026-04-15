@@ -2,9 +2,10 @@ import { db } from "../db";
 import { users, sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { RegisterInput, LoginInput } from "../validators/user-validator";
 
 export class UsersService {
-  async registerUser(data: any) {
+  async registerUser(data: RegisterInput) {
     const { firstname, lastname, email, password } = data;
 
     // Hash password
@@ -39,7 +40,7 @@ export class UsersService {
     }
   }
 
-  async loginUser(data: any) {
+  async loginUser(data: LoginInput) {
     const { email, password } = data;
 
     // Find user
