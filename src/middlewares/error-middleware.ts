@@ -16,6 +16,11 @@ export const errorMiddleware = (err: any, req: Request, res: Response, next: Nex
     return ApiResponse.error(res, 401, "Unauthorized");
   }
 
+  // PostgreSQL string overflow/truncation
+  if (err.code === "22001") {
+    return ApiResponse.error(res, 400, "Input value exceeds allowed length");
+  }
+
   // Zod validation errors (we'll handle this in validate-middleware too, but good to have here)
   if (err.name === "ZodError") {
     return ApiResponse.error(res, 400, "Validation Error", err.errors);
