@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import { ApiResponse } from "../utils/api-response";
 
-export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const errorMiddleware = (err: Error & { code?: string; cause?: any }, req: Request, res: Response, next: NextFunction) => {
   // If headers are already sent, delegate to the default Express error handler
   if (res.headersSent) {
     return next(err);
