@@ -25,7 +25,7 @@ export const errorMiddleware = (err: Error & { code?: string; cause?: any }, req
   }
   
   if (pgCode === "23505") {
-    return ApiResponse.error(res, 400, "User already exists");
+    return ApiResponse.error(res, 409, "User already exists");
   }
 
   // Zod validation errors
