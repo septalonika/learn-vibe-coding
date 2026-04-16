@@ -56,7 +56,22 @@ learn-vibe-coding/
 
 ---
 
+## 📚 API Documentation (Swagger)
+
+This application is equipped with interactive API documentation using **Swagger UI**.
+
+To view and test all endpoints along with their request and response schemas:
+1. Ensure the local server is running (`bun run dev`).
+2. Open your browser and navigate to:
+   **[http://localhost:3000/api-docs](http://localhost:3000/api-docs)**
+
+> **🛡️ Testing Protected Endpoints:** 
+> To test endpoints that require authentication (such as `/current` or `/logout`), first log in via Swagger. Copy the *token* from the response, click the **Authorize** button in the top right corner of the Swagger page, and *paste* your token there.
+
+---
+
 ## ☁️ Available API Endpoints
+
 
 Base URL: `/api/v1`
 
