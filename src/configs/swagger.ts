@@ -11,8 +11,8 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
-        description: "Local Development Server",
+        url: process.env.SERVER_URL || "http://localhost:3000",
+        description: process.env.NODE_ENV === "production" ? "Production Server" : "Local Development Server",
       },
     ],
     // Konfigurasi skema keamanan Bearer Token

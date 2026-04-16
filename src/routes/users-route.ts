@@ -59,7 +59,7 @@ const router = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: User registered successfully
+ *                   example: User created successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -79,6 +79,8 @@ const router = Router();
  *         description: Validasi gagal (input tidak valid)
  *       409:
  *         description: Email sudah terdaftar
+ *       500:
+ *         description: Internal Server Error
  */
 router.post("/", validateRequest(registerSchema), userController.register);
 
@@ -116,17 +118,16 @@ router.post("/", validateRequest(registerSchema), userController.register);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Login successful
+ *                   example: Login successfully
  *                 data:
- *                   type: object
- *                   properties:
- *                     token:
- *                       type: string
- *                       example: abc123xyz...
+ *                   type: string
+ *                   example: abc123xyz...
  *       400:
  *         description: Validasi gagal
  *       401:
  *         description: Email atau password salah
+ *       500:
+ *         description: Internal Server Error
  */
 router.post("/login", validateRequest(loginSchema), userController.login);
 
@@ -148,7 +149,7 @@ router.post("/login", validateRequest(loginSchema), userController.login);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Success
+ *                   example: User found
  *                 data:
  *                   type: object
  *                   properties:
@@ -170,6 +171,8 @@ router.post("/login", validateRequest(loginSchema), userController.login);
  *                       example: 2024-01-01T00:00:00.000Z
  *       401:
  *         description: Token tidak valid atau tidak dikirim
+ *       500:
+ *         description: Internal Server Error
  */
 router.get("/current", authMiddleware, userController.getCurrentUser);
 
@@ -191,13 +194,15 @@ router.get("/current", authMiddleware, userController.getCurrentUser);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Logout successful
+ *                   example: Logout success
  *                 data:
  *                   type: string
  *                   nullable: true
  *                   example: null
  *       401:
  *         description: Token tidak valid atau tidak dikirim
+ *       500:
+ *         description: Internal Server Error
  */
 router.delete("/logout", authMiddleware, userController.logout);
 

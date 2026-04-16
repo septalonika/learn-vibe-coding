@@ -10,7 +10,9 @@ const app = express();
 app.use(express.json());
 
 // Swagger UI — harus didaftarkan SEBELUM route lainnya
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (process.env.NODE_ENV !== "production") {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 // Health check
 app.get("/health", (req, res) => {
