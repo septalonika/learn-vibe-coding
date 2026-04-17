@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import { ApiResponse } from "../utils/api-response";
 
@@ -30,7 +30,8 @@ export const errorMiddleware = (err: Error & { code?: string; cause?: any }, req
 
   // Zod validation errors
   if (err instanceof ZodError || err.name === "ZodError") {
-    return ApiResponse.error(res, 400, "Validation Error", err.errors);
+    const zodError = err as ZodError;
+    return ApiResponse.error(res, 400, "Validation Error", zodError.issues);
   }
 
   // Default catch-all
