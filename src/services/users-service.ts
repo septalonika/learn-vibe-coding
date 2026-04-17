@@ -2,7 +2,7 @@ import { db } from "../db";
 import { users, sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import { RegisterInput, LoginInput } from "../validators/user-validator";
+import { type RegisterInput, type LoginInput } from "../validators/user-validator";
 
 export class UsersService {
   async registerUser(data: RegisterInput) {

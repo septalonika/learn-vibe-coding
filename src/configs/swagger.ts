@@ -4,10 +4,10 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Learn Vibe Coding API",
+      title: "CRUD Basic Template", 
       version: "1.0.0",
       description:
-        "Dokumentasi API untuk project Learn Vibe Coding. Gunakan endpoint /api/v1/users/login untuk mendapatkan token, lalu klik tombol Authorize di pojok kanan atas.",
+        "API Documentation for Basic CRUD template. Use the /api/v1/users/login endpoint to get a token, then click the Authorize button in the top right corner.",
     },
     servers: [
       {

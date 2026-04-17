@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { db } from "../db";
 import { sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { ApiResponse } from "../utils/api-response";
-import { AuthRequest } from "../types/auth";
+import { type AuthRequest } from "../types/auth";
 
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -14,6 +14,10 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     }
 
     const token = authHeader.split(" ")[1];
+
+    if (!token) {
+      return ApiResponse.error(res, 401, "Unauthorized");
+    }
 
     const session = await db.query.sessions.findFirst({
       where: eq(sessions.token, token),
