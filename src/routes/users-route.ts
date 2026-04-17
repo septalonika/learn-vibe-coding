@@ -77,10 +77,44 @@ const router = Router();
  *                       example: john.doe@example.com
  *       400:
  *         description: Validasi gagal (input tidak valid)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Validation Error
+ *                 error:
+ *                   type: array
+ *                   items:
+ *                     type: object
  *       409:
  *         description: Email sudah terdaftar
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User already exists
+ *                 error:
+ *                   type: string
+ *                   example: User already exists
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: An unexpected error occurred
+ *                 error:
+ *                   type: string
+ *                   example: Internal Server Error
  */
 router.post("/", validateRequest(registerSchema), userController.register);
 
@@ -124,10 +158,44 @@ router.post("/", validateRequest(registerSchema), userController.register);
  *                   example: abc123xyz...
  *       400:
  *         description: Validasi gagal
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Validation Error
+ *                 error:
+ *                   type: array
+ *                   items:
+ *                     type: object
  *       401:
  *         description: Email atau password salah
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: An unexpected error occurred
+ *                 error:
+ *                   type: string
+ *                   example: Internal Server Error
  */
 router.post("/login", validateRequest(loginSchema), userController.login);
 
@@ -171,8 +239,30 @@ router.post("/login", validateRequest(loginSchema), userController.login);
  *                       example: 2024-01-01T00:00:00.000Z
  *       401:
  *         description: Token tidak valid atau tidak dikirim
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Unauthorized
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: An unexpected error occurred
+ *                 error:
+ *                   type: string
+ *                   example: Internal Server Error
  */
 router.get("/current", authMiddleware, userController.getCurrentUser);
 
@@ -201,8 +291,30 @@ router.get("/current", authMiddleware, userController.getCurrentUser);
  *                   example: null
  *       401:
  *         description: Token tidak valid atau tidak dikirim
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Unauthorized
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: An unexpected error occurred
+ *                 error:
+ *                   type: string
+ *                   example: Internal Server Error
  */
 router.delete("/logout", authMiddleware, userController.logout);
 
